@@ -1,6 +1,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] // hide console window on Windows in release
 
-use eframe::egui;
+use eframe::egui::{self, RichText, TextStyle};
 
 fn main() -> Result<(), eframe::Error> {
     // env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
@@ -15,11 +15,13 @@ fn main() -> Result<(), eframe::Error> {
 
     eframe::run_simple_native("code tweeter!!!", options, move |ctx, _frame| {
         egui::CentralPanel::default().show(ctx, |ui| {
-            ui.heading("epic code tweeter");
+            // ui.heading("epic code tweeter");
+            ui.vertical_centered(|ui| {
+                ui.heading("epic code tweeter");
+            });
+  
             ui.horizontal(|ui| {
-                let label = ui.label("Your text: ");
                 ui.text_edit_multiline(&mut code)
-                    .labelled_by(label.id);
             });
 
             // Submit button

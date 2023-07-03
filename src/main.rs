@@ -1,53 +1,34 @@
-use iced::widget::{button, column, text};
-use iced::{Alignment, Element, Sandbox, Settings};
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] // hide console window on Windows in release
 
-pub fn main() -> iced::Result {
-    CodeTweeter::run(Settings::default())
-}
+use eframe::egui;
 
-struct CodeTweeter {
-    code: String,
-}
+fn main() -> Result<(), eframe::Error> {
+    // env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
 
-#[derive(Debug, Clone, Copy)]
-enum CodeTweeterMessage {
-    CodeChanged,
-    SubmitPressed
-}
+    let options = eframe::NativeOptions {
+        initial_window_size: Some(egui::vec2(320.0, 240.0)),
+        ..Default::default()
+    };
 
-impl Sandbox for CodeTweeter {
-    type Message = CodeTweeterMessage;
+    // Our application state:
+    let mut code: String = "Arthur".to_owned();
 
-    // zarbobo
-    fn new() -> Self {
-        Self { code: "".to_string() }
-    }
+    eframe::run_simple_native("code tweeter!!!", options, move |ctx, _frame| {
+        egui::CentralPanel::default().show(ctx, |ui| {
+            ui.heading("epic code tweeter");
+            ui.horizontal(|ui| {
+                let label = ui.label("Your text: ");
+                ui.text_edit_multiline(&mut code)
+                    .labelled_by(label.id);
+            });
 
-    fn title(&self) -> String {
-        String::from("code tweeter !!!")
-    }
-
-    // state updates based on message woah
-    fn update(&mut self, message: CodeTweeterMessage) {
-        match message {
-            CodeTweeterMessage::CodeChanged => {
-                println!("the code changed! :O");
+            // Submit button
+            let submit_button = ui.button("Submit");
+            if submit_button.clicked() {
+                println!("stop clicking me uwu");
             }
-            CodeTweeterMessage::SubmitPressed => {
-                println!("stop pressing me uwu");
-            }
-        }
-    }
 
-    fn view(&self) -> Element<CodeTweeterMessage> {
-        column![
-            button("Change Code").on_press(CodeTweeterMessage::CodeChanged),
-            // text(self.value).size(50),
-            text("amongus").size(50),
-            button("Submit").on_press(CodeTweeterMessage::SubmitPressed)
-        ]
-        .padding(20)
-        .align_items(Alignment::Center)
-        .into()
-    }
+            ui.label(format!("your text: {code}"));
+        });
+    })
 }

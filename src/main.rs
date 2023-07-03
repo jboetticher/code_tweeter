@@ -6,7 +6,7 @@ fn main() -> Result<(), eframe::Error> {
     // env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
 
     let options = eframe::NativeOptions {
-        initial_window_size: Some(egui::vec2(320.0, 240.0)),
+        initial_window_size: Some(egui::vec2(640.0, 640.0)),
         ..Default::default()
     };
 
@@ -19,18 +19,18 @@ fn main() -> Result<(), eframe::Error> {
             ui.vertical_centered(|ui| {
                 ui.heading("epic code tweeter");
             });
-  
+
             ui.horizontal(|ui| {
-                ui.text_edit_multiline(&mut code)
+                ui.vertical(|ui| {
+                    ui.text_edit_multiline(&mut code);
+                    // Submit button
+                    let submit_button: egui::Response = ui.button("Submit");
+                    if submit_button.clicked() {
+                        println!("stop clicking me uwu");
+                    }
+                });
+                ui.label(format!("your text: {code}"));
             });
-
-            // Submit button
-            let submit_button = ui.button("Submit");
-            if submit_button.clicked() {
-                println!("stop clicking me uwu");
-            }
-
-            ui.label(format!("your text: {code}"));
         });
     })
 }

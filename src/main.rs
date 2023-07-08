@@ -13,7 +13,7 @@ fn main() -> Result<(), eframe::Error> {
     };
 
     // Our application state:
-    let mut boxes: Vec<String> = vec!["".to_string()];
+    let mut sections: Vec<(String, String)> = vec![("".to_string(), "".to_string())];
 
     eframe::run_simple_native("code tweeter!!!", options, move |ctx, _frame| {
         egui::CentralPanel::default().show(ctx, |ui| {
@@ -22,25 +22,33 @@ fn main() -> Result<(), eframe::Error> {
                 ui.heading("epic code tweeter");
             });
 
-            ui.horizontal(|ui| {
-                ScrollArea::vertical()
-                    .min_scrolled_height(window_size)
-                    .show(ui, |ui| {
-                        ui.vertical(|ui| {
-                            for b in &mut boxes {
-                                ui.text_edit_multiline(b);
-                            }
-                            
-                            // Submit button
-                            let add_button: egui::Response = ui.button("Add Text");
-                            if add_button.clicked() {
-                                boxes.push("default value".to_string());
-                            }
+            ScrollArea::vertical()
+                .min_scrolled_height(_frame.info().window_info.size.y)
+                .show(ui, |ui| {
+                    ui.vertical(|ui| {
+                        ui.horizontal(|ui| {
+                            ui.heading("text");
+                            ui.heading("code");
+                            ui.heading("preview");
                         });
+
+                        for b in &mut sections {
+                            ui.horizontal(|ui| {
+                                ui.text_edit_multiline(&mut b.0);
+                                ui.text_edit_multiline(&mut b.1);
+
+                                let x = &b.0;
+                                ui.label(format!("your text: {x}"));
+                            });
+                        }
+
+                        // Submit button
+                        let add_button: egui::Response = ui.button("Add Section");
+                        if add_button.clicked() {
+                            sections.push(("caption...".to_string(), "".to_string()));
+                        }
                     });
-                let code = &boxes.concat();
-                ui.label(format!("your text: {code}"));
-            });
+                });
         });
     })
 }

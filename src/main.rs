@@ -13,7 +13,7 @@ fn main() -> Result<(), eframe::Error> {
     };
 
     // Our application state:
-    let mut code: String = "Arthur".to_owned();
+    let mut boxes: Vec<String> = vec!["".to_string()];
 
     eframe::run_simple_native("code tweeter!!!", options, move |ctx, _frame| {
         egui::CentralPanel::default().show(ctx, |ui| {
@@ -27,14 +27,18 @@ fn main() -> Result<(), eframe::Error> {
                     .min_scrolled_height(window_size)
                     .show(ui, |ui| {
                         ui.vertical(|ui| {
-                            ui.text_edit_multiline(&mut code);
+                            for b in &mut boxes {
+                                ui.text_edit_multiline(b);
+                            }
+                            
                             // Submit button
-                            let submit_button: egui::Response = ui.button("Submit");
-                            if submit_button.clicked() {
-                                println!("stop clicking me uwu");
+                            let add_button: egui::Response = ui.button("Add Text");
+                            if add_button.clicked() {
+                                boxes.push("default value".to_string());
                             }
                         });
                     });
+                let code = &boxes.concat();
                 ui.label(format!("your text: {code}"));
             });
         });
